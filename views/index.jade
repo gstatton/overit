@@ -15,5 +15,8 @@ block content
 					span.input-group-btn
 						button.btn.btn-default(type='button')
 							input(type="submit", value="Go!")
-
-
+			br
+			br
+			h1 Your Top 5 OverIts!:
+			for result in jadedata
+				p #{result._id} : #{result.total}

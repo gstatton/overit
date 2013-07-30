@@ -58,7 +58,23 @@ app.configure( function () {
 
 app.get('/', function (req, res) {
   console.log(req.user); 	
-  res.render('index');
+  //res.render('index');
+  //console.log(req.loggedIn);
+  if( req.loggedIn ){
+    username = req.user.twitter.screen_name;
+    db.overits.aggregate( [ { $match: {user: username } }, { $group: { _id: "$url", total: { $sum: 1 } } }, { $sort: { total: - 1 } } ], function (err, data){
+    console.log(JSON.stringify(data));
+    //res.render('index', { locals: { jadedata: data } });
+    res.render('index', { layout : 'layout', jadedata: JSON.stringify(data) });
+  })
+  } else {
+    username = "none";
+    res.render('index');
+  }
+
+
+
+
 });
 
 app.post('/overit', function (req, res){
@@ -70,9 +86,9 @@ app.post('/overit', function (req, res){
 	db.overits.save({timestame: datetime , user: req.user.twitter.screen_name, url: url}, function(err, overits){
 
     if( err || !overits.length){
-      res.render('index');
+      res.redirect('/');
     } else {
-      res.redirect('index');
+      res.redirect('/');
     }
     });
 });
