@@ -14,11 +14,7 @@ div.navbar.navbar-inverse.navbar-fixed-top
 								- if (!everyauth.loggedIn)
 									a(href='/auth/twitter', style='border: 0px') Login
 								- else
-									a(href='http://www.twitter.com/' + #{everyauth.twitter.user.screen_name}) #{everyauth.twitter.user.screen_name}
-									.btn-group
-									    button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown')
-									        img(src="#{everyauth.twitter.user.profile_image_url}", width="40px", height="40px")
-									        span.caret
-									      ul.dropdown-menu
-									        li
-									          a(href='/logout') Logout
+									img(src="#{everyauth.twitter.user.profile_image_url}", width="40px", height="40px", data-toggle='dropdown')
+									ul.dropdown-menu
+										li
+											a(href='/logout') Logout
