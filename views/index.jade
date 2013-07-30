@@ -21,6 +21,13 @@ block content
 							button.btn.btn-default(type='button')
 								input(type="submit", value="Go!")
 				h1 Your Top 5 OverIts!
-				-var data = JSON.parse(jadedata)
-				for result in data
-					p #{result._id} : #{result.total}
+				h3
+					-var data = JSON.parse(jadedata)
+					for result in data
+						form(name="input", action="/overit", method="post")
+							-var url = JSON.stringify(result._id)
+							input(type="hidden", name="url", value="#{result._id}")
+							p #{result._id} : #{result.total} 
+								button.btn.btn-primary(type="submit")
+									span.glyphicon.glyphicon-thumbs-down
+
