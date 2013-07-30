@@ -1,0 +1,18 @@
+extends layout
+
+block content
+	div.container
+		- if (!everyauth.loggedIn)
+			h1 Login for more OverIT!
+		- else
+			
+			h1 Hi #{everyauth.twitter.user.name}! are you OverIt?
+			p Are you sick of something? Tell the world how you feel!!
+			div.input-group
+				span.input-group-addon.input-large
+					input{type:text class:"form-control input-large" placeholder:OVER-IT}
+				span.input-group-btn
+					button.btn.btn-default(type='button') Go!
+
+
+
