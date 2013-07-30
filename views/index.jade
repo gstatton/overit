@@ -16,5 +16,6 @@ block content
 							button.btn.btn-default(type='button')
 								input(type="submit", value="Go!")
 				h1 Your Top 5 OverIts!
-				for result in jadedata
+				-var data = JSON.parse(jadedata)
+				for result in data
 					p #{result._id} : #{result.total}
