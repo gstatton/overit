@@ -62,7 +62,7 @@ app.get('/', function (req, res) {
   //console.log(req.loggedIn);
   if( req.loggedIn ){
     username = req.user.twitter.screen_name;
-    db.overits.aggregate( [ { $match: {user: username } }, { $group: { _id: "$url", total: { $sum: 1 } } }, { $sort: { total: - 1 } } ], function (err, data){
+    db.overits.aggregate( [ { $match: {user: username } }, { $group: { _id: "$url", total: { $sum: 1 } } }, { $sort: { total: - 1 } }, { $limit: 5 } ], function (err, data){
     console.log(JSON.stringify(data));
     //res.render('index', { locals: { jadedata: data } });
     res.render('index', { layout : 'layout', jadedata: JSON.stringify(data) });
