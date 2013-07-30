@@ -5,18 +5,16 @@ block content
 		- if (!everyauth.loggedIn)
 			h1 Login for more OverIT!
 		- else
-			
+
 			h1 Hi #{everyauth.twitter.user.name}! are you OverIt?
 			p Are you sick of something? Tell the world how you feel!!
 			div.input-group
 				form(name="input", action="/overit", method="post")
 					key Enter Your URL Here!
 						input(type="text", name="url", id="url")
-					span.input-group-btn
-						button.btn.btn-default(type='button')
-							input(type="submit", value="Go!")
-			br
-			br
-			h1 Your Top 5 OverIts!:
-			for result in jadedata
-				p #{result._id} : #{result.total}
+							span.input-group-btn
+							button.btn.btn-default(type='button')
+								input(type="submit", value="Go!")
+				h1 Your Top 5 OverIts!
+				for result in jadedata
+					p #{result._id} : #{result.total}
