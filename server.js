@@ -5,7 +5,7 @@ var express = require('express')
   , conf = require('./conf')
   , db = require("mongojs").connect(databaseUrl,collections)
   , everyauthRoot = __dirname + '.';
-
+var port = 3000
 var UserService = require('service').UserService
 
 everyauth.debug = true;
@@ -96,7 +96,8 @@ app.post('/overit', function (req, res){
     });
 });
 
-app.listen(3000);
+app.listen(process.env.PORT || port);
+console.log('starting server on port ' + port);
 
 //console.log('Go to http://local.host:3000');
 
