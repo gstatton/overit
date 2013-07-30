@@ -1,10 +1,12 @@
 var express = require('express')
-  , databaseUrl = "mongodb://overit:0v3r1t123@dharma.mongohq.com:10070/overit"; 
-  , collections = ['overits'];
+  , databaseUrl = "mongodb://overit:0v3r1t123@dharma.mongohq.com:10070/overit"
+  , collections = ['overits']
   , everyauth = require('everyauth')
   , conf = require('./conf')
   , db = require("mongojs").connect(databaseUrl,collections)
   , everyauthRoot = __dirname + '.';
+
+var UserService = require('service').UserService
 
 everyauth.debug = true;
 
@@ -24,17 +26,12 @@ function addUser (source, sourceUser) {
   return user;
 }
 
-
-var usersByTwitId = {};
-
-var usersByLogin = {
-  'brian@example.com': addUser({ login: 'brian@example.com', password: 'password'})
-};
-
 everyauth.everymodule
   .findUserById( function (id, callback) {
     callback(null, usersById[id]);
   });
+
+var usersByTwitId = {};
 
 everyauth
   .twitter
@@ -45,7 +42,6 @@ everyauth
     })
     .redirectPath('/');
 
-
 var app = express();
 app.use(express.static(__dirname + '/public'))
   .use(express.favicon())
@@ -53,6 +49,7 @@ app.use(express.static(__dirname + '/public'))
   .use(express.cookieParser('htuayreve'))
   .use(express.session())
   .use(everyauth.middleware());
+
 
 app.configure( function () {
   app.set('view engine', 'jade');
@@ -66,9 +63,19 @@ app.get('/', function (req, res) {
 
 app.post('/overit', function (req, res){
 	
-	var url = req.query.q;
-	db.overits.save({timestame: datetime, user: everyauth.twitter.user.screen_name, url: url})
-})
+	var url = req.body['url'];
+  var datetime = new Date().getTime();
+  //console.log(everyauth.twitter.user);
+  console.log("everyauth user: " + req.user.twitter.screen_name);
+	db.overits.save({timestame: datetime , user: req.user.twitter.screen_name, url: url}, function(err, overits){
+
+    if( err || !overits.length){
+      res.render('index');
+    } else {
+      res.redirect('index');
+    }
+    });
+});
 
 app.listen(3000);
 

@@ -9,9 +9,8 @@ div.navbar.navbar-inverse.navbar-fixed-top
 						| OverIt!
 					div.nav-collapse.collapse
 						ul.nav
+							
 							li.active
-								a(href="#") Home
-							li
 								- if (!everyauth.loggedIn)
 									a(href='/auth/twitter', style='border: 0px') Login
 								- else

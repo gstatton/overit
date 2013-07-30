@@ -9,10 +9,11 @@ block content
 			h1 Hi #{everyauth.twitter.user.name}! are you OverIt?
 			p Are you sick of something? Tell the world how you feel!!
 			div.input-group
-				span.input-group-addon.input-large
-					input{type:text class:"form-control input-large" placeholder:OVER-IT}
-				span.input-group-btn
-					button.btn.btn-default(type='button') Go!
-
+				form(name="input", action="/overit", method="post")
+					key Enter Your URL Here!
+						input(type="text", name="url", id="url")
+					span.input-group-btn
+						button.btn.btn-default(type='button')
+							input(type="submit", value="Go!")
 
 
