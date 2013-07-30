@@ -68,8 +68,11 @@ app.get('/', function (req, res) {
     res.render('index', { layout : 'layout', jadedata: JSON.stringify(data) });
   })
   } else {
-    username = "none";
-    res.render('index');
+    db.overits.aggregate( [ { $match: {url: /.*http.*/ } }, { $group: { _id: "$url", total: { $sum: 1 } } }, { $sort: { total: - 1 } } ], function (err, data){
+      console.log("un-logged-in data: " + JSON.stringify(data));
+      //res.render('index', { locals: { jadedata: data } });
+      res.render('index', { layout : 'layout', jadedata: JSON.stringify(data) });
+  })
   }
 
 

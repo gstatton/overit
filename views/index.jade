@@ -4,6 +4,11 @@ block content
 	div.container
 		- if (!everyauth.loggedIn)
 			h1 Login for more OverIT!
+			br
+			h2 Here's what people are over:
+			-var data = JSON.parse(jadedata)
+			for result in data
+				p #{result._id} : #{result.total}
 		- else
 
 			h1 Hi #{everyauth.twitter.user.name}! are you OverIt?
