@@ -1,10 +1,12 @@
 var express = require('express')
   , databaseUrl = "mongodb://overit:0v3r1t123@dharma.mongohq.com:10070/overit"
-  , collections = ['overits']
+  , collections = ['overits', 'links']
   , everyauth = require('everyauth')
   , conf = require('./conf')
   , db = require("mongojs").connect(databaseUrl,collections)
-  , everyauthRoot = __dirname + '.';
+  , everyauthRoot = __dirname + '.'
+  , request = require("request");
+
 var port = 3000
 var UserService = require('service').UserService
 
@@ -57,7 +59,7 @@ app.configure( function () {
 });
 
 app.get('/', function (req, res) {
-  console.log(req.user); 	
+  //console.log(req.user); 	
   //res.render('index');
   //console.log(req.loggedIn);
   if( req.loggedIn ){
@@ -84,20 +86,91 @@ app.post('/overit', function (req, res){
 	
 	var url = req.body['url'];
   var datetime = new Date().getTime();
-  //console.log(everyauth.twitter.user);
-  console.log("everyauth user: " + req.user.twitter.screen_name);
-	db.overits.save({timestame: datetime , user: req.user.twitter.screen_name, url: url}, function(err, overits){
 
-    if( err || !overits.length){
-      res.redirect('/');
-    } else {
-      res.redirect('/');
-    }
+	db.overits.save({timestame: datetime , user: req.user.twitter.screen_name, url: url}, function(err, overits){
+    console.log("saving the overit...");
+      
+      var url = req.body['url'];
+      // If the URL doesn't start with http, add it.
+      if (url.search(/^http/) == -1) {
+          url = 'http://' + url;
+      
+      }
+
+      var url = req.body['url'];
+      var shortcode = makeid(url);
+      console.log("here's the shortcode: " + shortcode);
+      
+
+          db.links.save({shortcode: shortcode, url: url}, function(err, saved) {
+
+            if( err || !saved ) {
+               console.log("Link not saved...already exists");
+               db.links.find({url: url}, function(err, data){
+                  console.log("here's the shortcode: " + JSON.stringify(data[0].shortcode));
+
+                  res.redirect('/' + data[0].shortcode);
+               });
+
+              //res.send("Here's your shortcode: " + shortcode);
+            } else {
+               console.log("Link saved: http://www.delike.us/" + shortcode );
+              res.redirect('/'+shortcode);
+            }
+
+          });
+
+
+
+      })
+
     });
+
+
+app.get('/link', function(req, res){
+  res.render('overit');
 });
+
+
+app.get('/:link', function(req, res){
+
+  db.links.find({shortcode: req.params.link}, function(err, links) {
+
+  
+    if( err || !links.length) {
+      res.render('index');
+    } else {
+
+      req.session.shortcode = req.params.link;
+      req.session.url = links[0].url;
+
+      db.overits.find({url: links[0].url}, function(err, data) {
+        res.render('overit', { layout: 'layout', data: JSON.stringify(data)})
+      })      
+      
+    }
+    //dash.dashupdate();
+
+  }); 
+
+});
+
 
 app.listen(process.env.PORT || port);
 console.log('starting server on port ' + port);
+
+// Link shortener logic
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 5; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}                  
+
 
 //console.log('Go to http://local.host:3000');
 
