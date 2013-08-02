@@ -119,9 +119,6 @@ app.post('/overit', function (req, res){
             }
 
           });
-
-
-
       })
 
     });
@@ -145,7 +142,7 @@ app.get('/:link', function(req, res){
       req.session.url = links[0].url;
 
       db.overits.find({url: links[0].url}, function(err, data) {
-        res.render('overit', { layout: 'layout', data: JSON.stringify(data)})
+        res.render('overit', { layout: 'layout', data: JSON.stringify(data), showurl: data[0].url})
       })      
       
     }
