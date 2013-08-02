@@ -3,27 +3,29 @@ extends layout
 block content
 	div.container
 		div.container
+		h1 #{showurl}
 		//Main hero unit for a primary marketing message or call to action
 		div.hero-unit
 			img(src='http://api.screenshotmachine.com/?key=1f93e1&size=L&url=#{showurl}&format=PNG')
 		h1 Who's over #{showurl} anyway?
 		p
-		a.btn.btn-primary.btn-large="Learn more &raquo;"
 		//.hero-unit
 		//Example row of columns
 		div.row
-			div.span4
-				h2="Heading"
+			div.span6
+				h2 Who's DeLike'd #{showurl}
 				p #{data}
 				p
 					a.btn(href="#")="View details &raquo;"
+		div.row
 			div.span4
-				h2="Heading"
+				h2 Other Sites you Might DeLike:
 				p="#{data}"
 				p
 					a.btn(href="#")="View details &raquo;"
+		div.row
 			div.span4
-				h2="Heading"
+				h2 What are People saying about #{showurl}
 				p="#{data}"
 				p
 					a.btn(href="#")="View details &raquo;"
