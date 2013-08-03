@@ -7,26 +7,35 @@ block content
 		//Main hero unit for a primary marketing message or call to action
 		div.hero-unit
 			img(src='http://api.screenshotmachine.com/?key=1f93e1&size=L&url=#{showurl}&format=PNG')
+
 		h1 Who's over #{showurl} anyway?
+		form(name="input", action="/overit", method="post")
+			input(type="hidden", name="url", value="#{showurl}")
+			button.btn.btn-primary(type="submit")
+				span.glyphicon.glyphicon-thumbs-down
+
 		p
 		//.hero-unit
 		//Example row of columns
 		div.row
 			div.span6
 				h2 Who's DeLike'd #{showurl}
-				p #{data}
-				p
-					a.btn(href="#")="View details &raquo;"
+				- var Tdata = JSON.parse(usrDElikes)
+				- each result in Tdata
+					- var user = result.user
+					- var url = result.img
+					a(href='/p/#{user}')
+						img(src='#{url}', height='40px', width='40px')
 		div.row
 			div.span4
 				h2 Other Sites you Might DeLike:
-				p="#{data}"
+				//p #{usrDElikes}
 				p
 					a.btn(href="#")="View details &raquo;"
 		div.row
 			div.span4
 				h2 What are People saying about #{showurl}
-				p="#{data}"
-				p
+
+				//p #{usrDElikes}
 					a.btn(href="#")="View details &raquo;"
 		//.row

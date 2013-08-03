@@ -5,8 +5,16 @@ var express = require('express')
   , conf = require('./conf')
   , db = require("mongojs").connect(databaseUrl,collections)
   , everyauthRoot = __dirname + '.'
-  , request = require("request");
+  , request = require("request")
+  , Twit = require("twit");
 
+
+var T = new Twit({
+    consumer_key:         '1tTY8hBE4mRtc0THY66l7A'
+  , consumer_secret:      'DkWHrpfziWxoTY8RbaQNT5sfOcQ2KTe4omMZk90xKk'
+  , access_token:         '654193-SSK2RC39ZSKRZ6LgS8HY0YYgNyrbaW3D7IGbKnQTg'
+  , access_token_secret:  'pedalNH6hrDJ5BOg9RGWyqw501Z6FUpAkCyrhH8B3pc'
+})
 var port = 3000
 var UserService = require('service').UserService
 
@@ -131,6 +139,10 @@ app.get('/link', function(req, res){
 
 app.get('/:link', function(req, res){
 
+  var usrDElikes = {};
+  var x = [];
+  var userlist = '';
+
   db.links.find({shortcode: req.params.link}, function(err, links) {
 
   
@@ -142,10 +154,38 @@ app.get('/:link', function(req, res){
       req.session.url = links[0].url;
 
       db.overits.find({url: links[0].url}, function(err, data) {
-        res.render('overit', { layout: 'layout', data: JSON.stringify(data), showurl: data[0].url})
-      })      
+        for (var i = data.length - 1 ; i >= 0; i--) {
+
+          //console.log(data[i].user);
+          userlist = userlist + ',' + data[i].user;
+          //usrDElikes.name = data[i].user;
+        };
+          //console.log("about to make the call to twitter with: " + userlist);
+          T.get('users/lookup', { screen_name: userlist }, function(err, reply){
+            //console.log(reply[0].profile_image_url);
+            console.log(reply);
+            console.log(reply.length);
+            for (var i = reply.length - 1; i >= 0; i--) {
+              //console.log("screen_name: " + reply[i].screen_name);
+              //console.log("profile_image_url:" + reply[i].profile_image_url);
+              //usrDElikes.user = reply[i].screen_name;
+              //usrDElikes.img = reply[i].profile_image_url;
+              usrDElikes[i] = {
+                          "user": reply[i].screen_name,
+                          "img": reply[i].profile_image_url
+              }
+            };
+            console.log("here's the object: " + JSON.stringify(usrDElikes));
+            res.render('overit', { layout: 'layout', 
+                       data: JSON.stringify(data), 
+                       usrDElikes: JSON.stringify(usrDElikes),
+                       raw: reply
+
+                     });
+        });
+      });      
       
-    }
+    };
     //dash.dashupdate();
 
   }); 

@@ -6,7 +6,7 @@ block content
 			h1 Login for more OverIT!
 			br
 			h2 Here's what people are over:
-			-var data = JSON.parse(jadedata)
+			- var data = JSON.parse(jadedata)
 			for result in data
 				p #{result._id} : #{result.total}
 		- else
@@ -22,10 +22,10 @@ block content
 								input(type="submit", value="Go!")
 				h1 Your Top 5 OverIts!
 				h3
-					-var data = JSON.parse(jadedata)
+					- var data = JSON.parse(jadedata)
 					for result in data
 						form(name="input", action="/overit", method="post")
-							-var url = JSON.stringify(result._id)
+							- var url = JSON.stringify(result._id)
 							input(type="hidden", name="url", value="#{result._id}")
 							p #{result._id} : #{result.total} 
 								button.btn.btn-primary(type="submit")

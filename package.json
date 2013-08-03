@@ -8,6 +8,7 @@
   ,   "jade": ""
   ,   "mongojs": "0.4.x"
   ,   "service": ""
+  ,   "twit": ""
 
   }
   , "devDependencies": {
