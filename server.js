@@ -166,10 +166,6 @@ app.get('/:link', function(req, res){
             console.log(reply);
             console.log(reply.length);
             for (var i = reply.length - 1; i >= 0; i--) {
-              //console.log("screen_name: " + reply[i].screen_name);
-              //console.log("profile_image_url:" + reply[i].profile_image_url);
-              //usrDElikes.user = reply[i].screen_name;
-              //usrDElikes.img = reply[i].profile_image_url;
               usrDElikes[i] = {
                           "user": reply[i].screen_name,
                           "img": reply[i].profile_image_url
@@ -179,6 +175,7 @@ app.get('/:link', function(req, res){
             res.render('overit', { layout: 'layout', 
                        data: JSON.stringify(data), 
                        usrDElikes: JSON.stringify(usrDElikes),
+                       showurl: links[0].url,
                        raw: reply
 
                      });
