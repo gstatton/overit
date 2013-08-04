@@ -5,8 +5,8 @@ div.navbar.navbar-inverse.navbar-fixed-top
 				span.icon-bar
 				span.icon-bar
 				span.icon-bar
-					a.brand(href="/")
-						| OverIt!
+						a.brand.h1(href="/")
+							| DeLike.US!
 					div.nav-collapse.collapse
 						ul.nav
 							
@@ -18,3 +18,4 @@ div.navbar.navbar-inverse.navbar-fixed-top
 									ul.dropdown-menu
 										li
 											a(href='/logout') Logout
+											a(href='/p/#{everyauth.twitter.user.screen_name}') My DeLikes

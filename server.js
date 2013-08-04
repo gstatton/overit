@@ -1,6 +1,6 @@
 var express = require('express')
   , databaseUrl = "mongodb://overit:0v3r1t123@dharma.mongohq.com:10070/overit"
-  , collections = ['overits', 'links']
+  , collections = ['overits', 'links', 'comments']
   , everyauth = require('everyauth')
   , conf = require('./conf')
   , db = require("mongojs").connect(databaseUrl,collections)
@@ -101,17 +101,12 @@ app.post('/overit', function (req, res){
       var url = req.body['url'];
       // If the URL doesn't start with http, add it.
       if (url.search(/^http/) == -1) {
-          url = 'http://' + url;
-      
+          url = 'http://www.' + url;
       }
-
       var url = req.body['url'];
       var shortcode = makeid(url);
       console.log("here's the shortcode: " + shortcode);
-      
-
           db.links.save({shortcode: shortcode, url: url}, function(err, saved) {
-
             if( err || !saved ) {
                console.log("Link not saved...already exists");
                db.links.find({url: url}, function(err, data){
@@ -120,15 +115,12 @@ app.post('/overit', function (req, res){
                   res.redirect('/' + data[0].shortcode);
                });
 
-              //res.send("Here's your shortcode: " + shortcode);
             } else {
                console.log("Link saved: http://www.delike.us/" + shortcode );
               res.redirect('/'+shortcode);
             }
-
           });
       })
-
     });
 
 
@@ -136,11 +128,23 @@ app.get('/link', function(req, res){
   res.render('overit');
 });
 
+app.get('/p/:user', function(req, res){
+
+  var user = req.params.user;
+
+  db.overits.find({user: user}, function(err, results) {
+    T.get('users/lookup', { screen_name: user}, function(err, data){
+      console.log(data[0].profile_image_url);
+      res.render('user', {layout: 'layouts', userdata: JSON.stringify(results), user_name: user, imgurl: data[0].profile_image_url});
+    
+    });
+  });
+
+})
 
 app.get('/:link', function(req, res){
 
   var usrDElikes = {};
-  var x = [];
   var userlist = '';
 
   db.links.find({shortcode: req.params.link}, function(err, links) {
@@ -155,14 +159,9 @@ app.get('/:link', function(req, res){
 
       db.overits.find({url: links[0].url}, function(err, data) {
         for (var i = data.length - 1 ; i >= 0; i--) {
-
-          //console.log(data[i].user);
           userlist = userlist + ',' + data[i].user;
-          //usrDElikes.name = data[i].user;
         };
-          //console.log("about to make the call to twitter with: " + userlist);
           T.get('users/lookup', { screen_name: userlist }, function(err, reply){
-            //console.log(reply[0].profile_image_url);
             console.log(reply);
             console.log(reply.length);
             for (var i = reply.length - 1; i >= 0; i--) {
@@ -177,16 +176,11 @@ app.get('/:link', function(req, res){
                        usrDElikes: JSON.stringify(usrDElikes),
                        showurl: links[0].url,
                        raw: reply
-
                      });
         });
       });      
-      
     };
-    //dash.dashupdate();
-
   }); 
-
 });
 
 

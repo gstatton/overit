@@ -1,0 +1,10 @@
+extends layout
+
+block content
+	div.container
+		div.container
+		img(src='#{imgurl}')
+		h1 #{user_name}'s Pretty Fed Up With:
+		- var data = JSON.parse(userdata)
+		each result in data
+			p #{result.url}
